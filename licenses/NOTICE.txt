@@ -1,0 +1,15 @@
+Noto Sans Mono CJK Nerd Font is a community modification of Noto Sans Mono CJK.
+Original font outlines © 2014–2021 Adobe (http://www.adobe.com/).
+Noto is a trademark of Google Inc. The original copyright and trademark notices
+are retained in the fonts. The modified fonts are distributed under OFL 1.1.
+
+This release adds resized icon outlines generated with Nerd Fonts 3.5.1,
+converts those outlines to CFF and prunes cross-language locl substitutions.
+Icon authors, source URLs and versions are listed in Icon-sets.md. The Font
+Logos set in the upstream inventory is not part of this release.
+
+Western outlines derive from Noto Sans Mono, Copyright 2022 The Noto Project
+Authors (https://github.com/notofonts/latin-greek-cyrillic), via the matching
+Nerd Fonts 3.5.1 Regular and Bold builds. This release centers regional forms
+in a 600/1200 grid, enlarges Han outlines by 3%, and rebuilds outlines in CFF.
+See Noto-Sans-Mono-OFL.txt.
