@@ -51,9 +51,14 @@ jobs:
         with:
           persist-credentials: false
           ref: ${{ needs.lint.outputs.commit }}
+      - name: Use Python with Unicode 16 font metrics
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.14'
       - name: Prepare pinned tools and upstream inputs
         run: |
           python3 -m venv .venv
+          .venv/bin/python -c 'import unicodedata as u; assert u.unidata_version == "16.0.0"'
           .venv/bin/pip install -r requirements.txt
           scripts/prepare.sh
           curl -fLsS --retry 3 -o .cache/FontForge.AppImage https://github.com/fontforge/fontforge/releases/download/20251009/FontForge-2025-10-09-Linux-x86_64.AppImage

@@ -5,8 +5,10 @@ script produces the ten fonts in a full release.
 
 ## Build one font
 
-Run these commands from the project root. You need Python 3.10 or newer, Bash,
-curl, unzip, sha256sum, and FontForge with Python scripting. CI uses FontForge
+Run these commands from the project root with Python 3.14, Bash, curl, unzip,
+sha256sum, and FontForge with Python scripting. The release build uses Python
+3.14's Unicode 16.0.0 data to determine character widths. Earlier versions can
+assign a different width to characters such as ☰ (U+2630). CI uses FontForge
 20251009. If your executable is outside your PATH, set `FONTFORGE` to its
 absolute path.
 
