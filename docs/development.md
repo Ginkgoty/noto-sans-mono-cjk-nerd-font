@@ -111,7 +111,8 @@ and glyph charts under [docs/glyphs](glyphs/) from the built fonts.
 shared `SHA256SUMS` file to `dist/`.
 
 The [GitHub Actions workflow](../.github/workflows/fonts.yml) builds and checks
-all five regions on pull requests and pushes to `main`. Pushing a version tag
+all five regions on pull requests and pushes to `main`. Changes confined to
+the root READMEs or `docs/` skip the font build. Pushing a version tag
 such as `v0.1.0` also publishes the archives and checksums as a GitHub Release
 after verification.
 

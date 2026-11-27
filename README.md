@@ -1,5 +1,7 @@
 # Noto Sans Mono CJK Nerd Font
 
+**English** · [简体中文](README.zh-Hans.md) · [繁體中文](README.zh-Hant.md) · [한국어](README.ko.md) · [日本語](README.ja.md)
+
 A monospace font for people who use Chinese, Japanese, or Korean alongside
 code. It pairs the Latin letters and numbers from NotoSansM Nerd Font Mono
 with regional Noto CJK characters and Nerd Fonts icons. In a terminal, a Latin
@@ -33,7 +35,7 @@ different one in each app.
 
 ## Install
 
-1. Download your ZIP from the project's GitHub **Releases** page and extract it.
+1. Download your ZIP from the project's [GitHub Releases page](https://github.com/Ginkgoty/noto-sans-mono-cjk-nerd-font/releases/latest) and extract it.
    Each ZIP contains two font files, Regular and Bold.
 2. On Windows or macOS, open each `.otf` file and choose **Install**. On Linux,
    copy both files into `~/.local/share/fonts/` (create the directory if needed)
