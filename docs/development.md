@@ -112,3 +112,9 @@ The [GitHub Actions workflow](../.github/workflows/fonts.yml) builds and checks
 all five regions on pull requests and pushes to `main`. Pushing a version tag
 such as `v0.1.0` also publishes the archives and checksums as a GitHub Release
 after verification.
+
+To publish an existing tag manually, open **Actions → Build regional fonts →
+Run workflow**, select `main`, and enter the tag in `release_tag`. The build
+and packaging jobs use that tag's commit. Before publishing, the workflow
+checks that the tag still points to the tested commit. Leave the field empty
+to run a build without publishing.

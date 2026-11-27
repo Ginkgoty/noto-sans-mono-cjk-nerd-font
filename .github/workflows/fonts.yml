@@ -2,6 +2,11 @@ name: Build regional fonts
 on:
   pull_request:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing v* tag to build and publish (leave blank for a test build)
+        type: string
+        required: false
   push:
     branches: [main]
     tags: ['v*']
@@ -10,11 +15,23 @@ permissions:
 
 jobs:
   lint:
+    outputs:
+      commit: ${{ steps.source.outputs.commit }}
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
+          ref: ${{ inputs.release_tag && format('refs/tags/{0}', inputs.release_tag) || '' }}
+      - name: Identify the source commit
+        id: source
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          if [[ -n "$RELEASE_TAG" ]]; then
+            [[ "$RELEASE_TAG" == v* ]] && git check-ref-format "refs/tags/$RELEASE_TAG" || exit 1
+          fi
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Check Python code
         run: |
           python3 -m venv .venv
@@ -33,6 +50,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
+          ref: ${{ needs.lint.outputs.commit }}
       - name: Prepare pinned tools and upstream inputs
         run: |
           python3 -m venv .venv
@@ -57,12 +75,13 @@ jobs:
           compression-level: 0
 
   package:
-    needs: fonts
+    needs: [lint, fonts]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
+          ref: ${{ needs.lint.outputs.commit }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           pattern: fonts-*
@@ -79,12 +98,24 @@ jobs:
           compression-level: 0
 
   release:
-    if: startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push'
-    needs: package
+    if: >-
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+      (github.event_name == 'workflow_dispatch' && startsWith(inputs.release_tag, 'v'))
+    needs: [lint, package]
+    env:
+      RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
     permissions:
       contents: write
     runs-on: ubuntu-24.04
     steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: refs/tags/${{ env.RELEASE_TAG }}
+          persist-credentials: false
+      - name: Confirm the tag still points to the tested commit
+        env:
+          TESTED_COMMIT: ${{ needs.lint.outputs.commit }}
+        run: test "$(git rev-parse HEAD)" = "$TESTED_COMMIT"
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           name: release-packages
@@ -95,4 +126,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           sha256sum -c SHA256SUMS
-          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes *.zip SHA256SUMS
+          gh release create "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes *.zip SHA256SUMS
